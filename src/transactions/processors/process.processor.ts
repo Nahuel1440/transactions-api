@@ -34,12 +34,14 @@ export class UploadProcessor extends WorkerHost {
           transactionFromFile;
 
         const transactionToSave = this.transactionsService.create({
-          id: transaction_id,
+          id: +transaction_id,
           date,
           amount,
           merchant,
           userId: user_id,
         });
+
+        await this.transactionsService.validateTransaction(transactionToSave);
 
         transactionsToSave.push(transactionToSave);
       }
@@ -62,6 +64,8 @@ export class UploadProcessor extends WorkerHost {
     });
 
     await this.firebaseService.removeFile(job.data.filePath);
+
+    this.logger.debug('Successful CSV Processing');
   }
 
   @OnWorkerEvent('failed')
@@ -76,6 +80,8 @@ export class UploadProcessor extends WorkerHost {
     });
 
     await this.firebaseService.removeFile(job.data.filePath);
+
+    this.logger.debug('CSV Processing Failed');
   }
 
   private async sendNotification(options: ISendMailOptions) {

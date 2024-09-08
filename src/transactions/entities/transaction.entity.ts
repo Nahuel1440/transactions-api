@@ -16,7 +16,7 @@ export class Transaction {
   date: Date;
 
   @Column('numeric', { precision: 10, scale: 2 })
-  amount: number;
+  amount: string;
 
   @Column('varchar', { length: 255 })
   merchant: string;

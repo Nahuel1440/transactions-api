@@ -1,12 +1,13 @@
 import {
   Controller,
-  Get,
   Post,
-  Param,
-  Delete,
   UseInterceptors,
   UploadedFile,
   HttpCode,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+  Get,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -18,18 +19,23 @@ export class TransactionsController {
   @Post('upload')
   @HttpCode(202)
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2000000 }),
+          new FileTypeValidator({ fileType: 'csv' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
     await this.transactionsService.processFile(file.buffer);
     return { message: 'File received and will be processed' };
   }
 
   @Get()
-  findAll() {
-    return this.transactionsService.findAll();
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionsService.remove(+id);
+  async getTransactions() {
+    return this.transactionsService.find();
   }
 }

@@ -4,8 +4,11 @@ import { randomUUID } from 'crypto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { validateOrReject } from 'class-validator';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class TransactionsService {
@@ -36,8 +39,17 @@ export class TransactionsService {
     );
   }
 
-  create(transactionToCreate: Partial<Transaction>) {
+  create(transactionToCreate: CreateTransactionDto) {
     return this.transactionRepository.create(transactionToCreate);
+  }
+
+  async validateTransaction(transaction: Partial<Transaction>) {
+    const createTransactionDto = plainToClass(
+      CreateTransactionDto,
+      transaction,
+    );
+
+    await validateOrReject(createTransactionDto);
   }
 
   /**
@@ -49,7 +61,7 @@ export class TransactionsService {
       .createQueryBuilder()
       .insert()
       .values(transactions)
-      .orIgnore()
+      .orIgnore('ON CONFLICT (id) DO NOTHING')
       .execute();
   }
 
@@ -57,15 +69,7 @@ export class TransactionsService {
     return await this.transactionRepository.save(transactions);
   }
 
-  findAll() {
-    return `This action returns all transactions`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  async find(options?: FindManyOptions<Transaction>) {
+    return await this.transactionRepository.find(options);
   }
 }

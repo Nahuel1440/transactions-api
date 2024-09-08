@@ -1,7 +1,7 @@
 export interface TransactionInFile {
-  transaction_id: number;
+  transaction_id: string;
   date: Date;
-  amount: number;
+  amount: string;
   merchant: string;
   user_id: string;
 }
