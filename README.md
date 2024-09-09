@@ -9,6 +9,10 @@
 
 Project for handling transactions received in csv format files
 
+## Documentation
+
+[Notion Link](https://www.notion.so/Design-doc-a8c75bbe0cf24db4b5799596af6d3988?pvs=4)
+
 ## Project setup
 
 1. Clone the project
