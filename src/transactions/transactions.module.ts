@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { BullModule } from '@nestjs/bullmq';
 import { FirebaseModule } from 'src/firebase/firebase.module';
-import { UploadProcessor } from './processors/process.processor';
+import { UploadProcessor } from './processors/upload.processor';
 
 @Module({
   controllers: [TransactionsController],

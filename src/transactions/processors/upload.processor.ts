@@ -2,7 +2,6 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { TransactionsService } from '../transactions.service';
 import { Job } from 'bullmq';
 import { FirebaseService } from '../../firebase/firebase.service';
-import * as csv from 'csvtojson';
 import { TransactionInFile } from '../interfaces/transaction.interfaces';
 import { Logger } from '@nestjs/common';
 import { Transaction } from '../entities/transaction.entity';
@@ -24,6 +23,7 @@ export class UploadProcessor extends WorkerHost {
     try {
       const file = await this.firebaseService.downloadFile(job.data.filePath);
 
+      const csv = require('csvtojson');
       const transactionsFromFile: TransactionInFile[] = await csv().fromString(
         file.toString(),
       );
