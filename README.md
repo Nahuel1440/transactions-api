@@ -7,7 +7,7 @@
 
 ## Description
 
-Project for handling transactions received in cdv format files
+Project for handling transactions received in csv format files
 
 ## Project setup
 
