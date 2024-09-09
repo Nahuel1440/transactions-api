@@ -7,18 +7,25 @@
 
 ## Description
 
-Project for handling transactions received in cdv format files
+Project for handling transactions received in csv format files
 
 ## Project setup
 
-1. Clonar proyecto
+1. Clone the project
 2. `yarn install`
-3. Clonar el archivo `.env.template` y nombrarlo a `.env`
-4. Cambiar las variables de entorno
-5. Levantar la base de datos
+3. Clone the file `.env.template` and renamed as `.env`
+4. Fill the enviroment variables
+5. Run the database with the following command
 
 ```
 docker-compose up -d
+```
+
+6. Generate and run the migrations
+
+```
+yarn migration:generate
+yarn migration:run
 ```
 
 ## Compile and run the project
@@ -32,4 +39,11 @@ $ yarn run start:dev
 
 # production mode
 $ yarn run start:prod
+
+# run migrations
+$ yarn migration:run
+
+# generate migrations
+$ yarn migration:generate
+
 ```
