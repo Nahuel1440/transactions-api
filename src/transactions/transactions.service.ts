@@ -30,7 +30,7 @@ export class TransactionsService {
       'file',
       { filePath, userEmail },
       {
-        attempts: 1,
+        attempts: 2,
         backoff: {
           type: 'exponential',
           delay: 5000,

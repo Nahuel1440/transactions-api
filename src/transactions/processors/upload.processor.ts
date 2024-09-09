@@ -6,6 +6,7 @@ import { TransactionInFile } from '../interfaces/transaction.interfaces';
 import { Logger } from '@nestjs/common';
 import { Transaction } from '../entities/transaction.entity';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
+import * as csv from 'csvtojson';
 
 @Processor('file-queue')
 export class UploadProcessor extends WorkerHost {
@@ -23,7 +24,6 @@ export class UploadProcessor extends WorkerHost {
     try {
       const file = await this.firebaseService.downloadFile(job.data.filePath);
 
-      const csv = require('csvtojson');
       const transactionsFromFile: TransactionInFile[] = await csv().fromString(
         file.toString(),
       );
@@ -54,34 +54,43 @@ export class UploadProcessor extends WorkerHost {
 
   @OnWorkerEvent('completed')
   async onFinishFileProcessing(job: Job) {
-    const message = `We are pleased to inform you that the CSV file you submitted has been successfully processed.\nThe data has been stored and is now ready for your for your reference.\nIf you need any further assistance, please do not hesitate to contact us.\nBest regards`;
+    try {
+      const message = `We are pleased to inform you that the CSV file you submitted has been successfully processed.\nThe data has been stored and is now ready for your for your reference.\nIf you need any further assistance, please do not hesitate to contact us.\nBest regards`;
 
-    await this.sendNotification({
-      from: process.env.EMAIL_USERNAME,
-      to: job.data.userEmail,
-      subject: `Successful CSV Processing`,
-      text: message,
-    });
+      await this.sendNotification({
+        from: process.env.EMAIL_USERNAME,
+        to: job.data.userEmail,
+        subject: `Successful CSV Processing`,
+        text: message,
+      });
 
-    await this.firebaseService.removeFile(job.data.filePath);
+      await this.firebaseService.removeFile(job.data.filePath);
 
-    this.logger.debug('Successful CSV Processing');
+      this.logger.debug('Successful CSV Processing');
+    } catch (error) {
+      this.logger.error(error.stack);
+    }
   }
 
   @OnWorkerEvent('failed')
+  @OnWorkerEvent('error')
   async onErrorFileProcessing(job: Job) {
-    const message = `Unfortunately, we encountered a problem processing the CSV file you submitted.\nPlease check the file and try again.\nIf the problem persists, please do not hesitate to contact our technical support.\nThank you for your understanding.\nBest regards`;
+    try {
+      const message = `Unfortunately, we encountered a problem processing the CSV file you submitted.\nPlease check the file and try again.\nIf the problem persists, please do not hesitate to contact our technical support.\nThank you for your understanding.\nBest regards`;
 
-    await this.sendNotification({
-      from: process.env.EMAIL_USERNAME,
-      to: job.data.userEmail,
-      subject: `CSV Processing Failed`,
-      text: message,
-    });
+      await this.sendNotification({
+        from: process.env.EMAIL_USERNAME,
+        to: job.data.userEmail,
+        subject: `CSV Processing Failed`,
+        text: message,
+      });
 
-    await this.firebaseService.removeFile(job.data.filePath);
+      await this.firebaseService.removeFile(job.data.filePath);
 
-    this.logger.debug('CSV Processing Failed');
+      this.logger.debug('CSV Processing Failed');
+    } catch (error) {
+      this.logger.error(error.stack);
+    }
   }
 
   private async sendNotification(options: ISendMailOptions) {
