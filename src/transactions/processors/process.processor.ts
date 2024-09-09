@@ -57,7 +57,7 @@ export class UploadProcessor extends WorkerHost {
     const message = `We are pleased to inform you that the CSV file you submitted has been successfully processed.\nThe data has been stored and is now ready for your for your reference.\nIf you need any further assistance, please do not hesitate to contact us.\nBest regards`;
 
     await this.sendNotification({
-      from: 'nahueltoloza014@gmail.com',
+      from: process.env.EMAIL_USERNAME,
       to: job.data.userEmail,
       subject: `Successful CSV Processing`,
       text: message,
@@ -73,7 +73,7 @@ export class UploadProcessor extends WorkerHost {
     const message = `Unfortunately, we encountered a problem processing the CSV file you submitted.\nPlease check the file and try again.\nIf the problem persists, please do not hesitate to contact our technical support.\nThank you for your understanding.\nBest regards`;
 
     await this.sendNotification({
-      from: 'nahueltoloza014@gmail.com',
+      from: process.env.EMAIL_USERNAME,
       to: job.data.userEmail,
       subject: `CSV Processing Failed`,
       text: message,
