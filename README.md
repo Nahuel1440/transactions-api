@@ -7,6 +7,8 @@
 
 ## Description
 
+Project for handling transactions received in cdv format files
+
 ## Project setup
 
 1. Clonar proyecto
