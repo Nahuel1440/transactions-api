@@ -15,6 +15,10 @@ Project for handling transactions received in csv format files
 
 [Notion Link](https://www.notion.so/Design-doc-a8c75bbe0cf24db4b5799596af6d3988?pvs=4)
 
+## System Overview
+
+![image](https://github.com/user-attachments/assets/b8ae699d-26df-4373-ab16-eadead93dd02)
+
 ## Project setup
 
 1. Clone the project
