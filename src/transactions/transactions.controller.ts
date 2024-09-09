@@ -38,4 +38,19 @@ export class TransactionsController {
   async getTransactions() {
     return this.transactionsService.find();
   }
+
+  @Get('analysis/volume-by-period')
+  async getTransactionVolumeByPeriod() {
+    return this.transactionsService.countTransactionsByPeriod();
+  }
+
+  @Get('analysis/merchants/top-10-by-transaction-volume')
+  async getTop10ByTransactionVolume() {
+    return this.transactionsService.getTop10MerchantByTransactionVolume();
+  }
+
+  @Get('analysis/posible-fraudalents')
+  async getPossibleFraudalentTransactions() {
+    return this.transactionsService.getPossibleFraudalentTransactions();
+  }
 }
