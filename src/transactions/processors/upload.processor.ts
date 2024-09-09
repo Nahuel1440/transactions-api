@@ -6,7 +6,6 @@ import { TransactionInFile } from '../interfaces/transaction.interfaces';
 import { Logger } from '@nestjs/common';
 import { Transaction } from '../entities/transaction.entity';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
-import * as csv from 'csvtojson';
 
 @Processor('file-queue')
 export class UploadProcessor extends WorkerHost {
@@ -24,6 +23,7 @@ export class UploadProcessor extends WorkerHost {
     try {
       const file = await this.firebaseService.downloadFile(job.data.filePath);
 
+      const csv = require('csvtojson');
       const transactionsFromFile: TransactionInFile[] = await csv().fromString(
         file.toString(),
       );
