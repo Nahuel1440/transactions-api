@@ -8,6 +8,8 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Get,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -29,8 +31,11 @@ export class TransactionsController {
       }),
     )
     file: Express.Multer.File,
+    @Query('userEmail') userEmail: string,
   ) {
-    await this.transactionsService.processFile(file.buffer);
+    if (!userEmail)
+      throw new BadRequestException('The userEmail query param is required');
+    await this.transactionsService.processFile(file.buffer, userEmail);
     return { message: 'File received and will be processed' };
   }
 

@@ -19,7 +19,7 @@ export class TransactionsService {
     @InjectQueue('file-queue') private fileQueue: Queue,
   ) {}
 
-  async processFile(file: Buffer) {
+  async processFile(file: Buffer, userEmail: string) {
     const uuid = randomUUID();
 
     const filePath = `files/${uuid}.csv`;
@@ -28,7 +28,7 @@ export class TransactionsService {
 
     this.fileQueue.add(
       'file',
-      { filePath, userEmail: 'nahuelkukianto@gmail.com' },
+      { filePath, userEmail },
       {
         attempts: 1,
         backoff: {
